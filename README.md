@@ -42,6 +42,27 @@ During the set up process, I had configured everything to a secure baseline, and
 As for the 'sensitive' transactional data I'd be analysing, OSPOS had, unfortunately, lacked the capability to take card payments, and so I repurposed a 'Comments' field in the POS terminal to accept the PAN (Primary Account Number - 16 digit number on the back of a bank card). For the test payments, I used a synthetic PAN, '4111 1111 1111 1111', which is a common Visa test card number. Obviously, using a real payment card for this project would be unethical and insecure, plus the synthetic PAN is easily-recognisable, which is why I did not use a real PAN for this experiment.
 
 # Results and Key Findings
+I tested five different misconfiguration scenarios across different areas of the environment:
+1. Debug Mode and Verbose Logging - Server-side
+2. Insecure Transport             - Network layer
+3. Session Storage Misuse         - Client-side
+4. Lack of Encryption at Rest     - Server-side
+5. Improper Invalidation          - Server-side
+
+## Results
+
+| Scenario | Implementation | Artefact Location | Retrieval Process |
+| :----: | :----: | :----: | :----: |
+| Debug Mode & Verbose Logging | Debug Mode Enabled, Logging Threshold Increased | Application Logs (3 files containing PAN) | `Grep` on log directory |
+| Insecure Transport | HTTPS disabled | Plaintext PAN in network packets | Wireshark capture and packet analysis |
+| Session Storage Misuse | PAN stored in client browser's local storage | Browser storage | Chrome developer tools |
+| Lack of Encryption at Rest | PAN stored in database unencrypted | Database table and raw InnoDB file | SQL queries and `Strings` |
+| Improper Invalidation | Row "deleted" with SQL | Still recoverable in underlying InnoDB file | File system analysis |
+
+## Key Findings
+There were two key findings from these tests. Firstly, and most importantly, cryptography is one of the most important factors when securely configuring systems, as the severity of many misconfigurations would be drastically decreased if sufficient encryption mechanisms were implemented. For example, the effects of verbose logging (sensitive data in log files) and improper invalidation ("deleted" data persisting in underlying storage) would be far less detrimental if the 'senstive data' was encrypted, as it would not only be harder to identify, but also much harder to exfiltrate, thus keeping an SME compliant with regulations and standards like GDPR and the PCI DSS requirements.
+
+The second key finding is that "deleted" does not necessarily mean 'securely erased', as shown when the 'deleted' PAN data from the database table was still present in underlying storage. This misconception is common amongst non-technical users and, in SME environments, can cause compliance issues. What is also interesting is that this result was inconsistent, and data recovery was dependant on subsequent database usage. Inconsistent results are certainly worth noting as a single configuration/operational audit may miss insecure practices, and operation may continue with said insecure practices going unnoticed. This emphasises the importance of regular audits and security checks.
 
 # Framework Evaluation
 
