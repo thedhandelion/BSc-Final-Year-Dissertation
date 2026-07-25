@@ -23,8 +23,23 @@ This project originated as a study assessing the security of commercially availa
 That said, this shift meant I was starting afresh two months into the project, leaving me with only four months to complete it instead of the original six, which only made my sense of achievement even greater when it was awarded 80%!
 
 # Research Questions
+1. What misconfiguration-related security risks are most prominent in web-based POS deplooyments used by SMEs?
+2. How do existing guidance and compliance frameworks, including Cyber Essentials, OWASP, and PCI DSS, address these risks and where do practical gaps remain for SMEs?
+3. To what extent do selected misconfiguration scenarios lead to recoverable residual artefacts in a controlled open-source POS test enviornment?
 
 # Methodology
+This project began with a literature review, in which I analysed not just secondary research, but the currently-available guidance and compliance frameworks and the root causes of misconfigurations in the first place, which will be discussed further in _Framework Evaluation_.
+
+The second part of this project involved a test environment using an open-source POS web app, which allowed me to configure a secure baseline, then implement common misconfigurations one-by-one to examine how and where these cause data remanence after normal operational use.
+
+## Test Environment
+For this project, I used two virtual machines (VMs):
+- A standard LAMP stack: Ubuntu Server, acting as a lightweight web server (Apache) and database (MySQL), with PHP for the scripting layer. This is the backend server that hosts the web application.
+- A thin client: Low-resource Windows 10 VM connected to the Ubuntu Serer via LAN. This simulates a shop-floor POS terminal and accesses the OSPOS web app via the web browser.
+
+During the set up process, I had configured everything to a secure baseline, and took a snapshot of each VM. The experiment would involve performing three test transactions in the secure environment and examining potential data remanence locations to verify that no 'sensitive' data would be retrievable. After doing so, I would revert the VMs back to their secure baselines, implement a misconfiguration, perform three further test transactions, and examine those same predicted artefact source locations for data remanence. I would revert back to the secure baseline snapshot prior to every misconfiguration test.
+
+As for the 'sensitive' transactional data I'd be analysing, OSPOS had, unfortunately, lacked the capability to take card payments, and so I repurposed a 'Comments' field in the POS terminal to accept the PAN (Primary Account Number - 16 digit number on the back of a bank card). For the test payments, I used a synthetic PAN, '4111 1111 1111 1111', which is a common Visa test card number. Obviously, using a real payment card for this project would be unethical and insecure, plus the synthetic PAN is easily-recognisable, which is why I did not use a real PAN for this experiment.
 
 # Results and Key Findings
 
