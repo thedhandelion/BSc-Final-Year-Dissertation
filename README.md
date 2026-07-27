@@ -67,12 +67,9 @@ The second key finding is that "deleted" does not necessarily mean 'securely era
 # Framework Evaluation
 During the literature review stage of my dissertation, I evaluated four sources of formal guidance that are available to SMEs: NCSC's Cyber Essentials, OWASP Top 10, OWASP ASVS, and PCI DSS. 
 
-Overall, I found Cyber Essentials to be too broad, covering a range of basic vulnerabilities that are useful for beginners, but lacks configuration-focused guidance that extends beyond changing default passwords and securing firewalls. 
-
-OWASP, on the other hand, is far more extensive, and provides not only a list of common vulnerabilities through its Top 10, but links those vulnerabilities to their Application Security Verification Standard (ASVS), which provides a comprehensive review checklist that can be used for securing web applications. However, a non-technical SME would struggle to use ASVS alone and secure a web application, and if they try, the likelihood of misconfigurations remains high.
-
-Finally, I looked at PCI's Data Security Standard (PCI DSS), which provides security requirements rather than technical guidance and, credit where credit's due, this is comprehensive and a valuable source of information. However, from an SME-standpoint, these requirements may not be easily understood by smaller businesses and achieving compliance may present further technical challenges for SMEs. 
-
+Overall, I found Cyber Essentials to be too broad, covering a range of basic vulnerabilities that are useful for beginners, but lacks configuration-focused guidance that extends beyond changing default passwords and securing firewalls.  
+OWASP, on the other hand, is far more extensive, and provides not only a list of common vulnerabilities through its Top 10, but links those vulnerabilities to their Application Security Verification Standard (ASVS), which provides a comprehensive review checklist that can be used for securing web applications. However, a non-technical SME would struggle to use ASVS alone and secure a web application, and if they try, the likelihood of misconfigurations remains high. 
+Finally, I looked at PCI's Data Security Standard (PCI DSS), which provides security requirements rather than technical guidance and, credit where credit's due, this is comprehensive and a valuable source of information. However, from an SME-standpoint, these requirements may not be easily understood by smaller businesses and achieving compliance may present further technical challenges for SMEs.  
 In conclusion, I found that while no single source provides full guidance coverage, each offers different forms of information and guidelines. Therefore, in my opinion, the best alternative for SMEs would be to combine all four frameworks, bridging the gaps and providing broad cyber security understanding, compliance requirements, and control checklists. That said, this could just introduce further complexity and overburden small businesses, but it's the strongest solution to the underlying problem: most frameworks are conceptual and don't offer practical implementation guidance.
 
 # Limitations
@@ -99,7 +96,7 @@ In the future, I hope to build onto this project, running more tests on multiple
 - Wireshark
 
 ## Degree and Grade
-University of the West of England
-Bachelor of Science with Honours
-Cyber Security and Digital Forensics
-Dissertation Classification: First Class (80%)
+University of the West of England  
+Bachelor of Science with Honours  
+Cyber Security and Digital Forensics  
+Dissertation Classification: First Class (80%)  
