@@ -1,5 +1,7 @@
 This is a write-up of my final year dissertation project for my Cyber Security and Digital Forensics (BSc Hons) degree, which was awarded a First Class mark of 80%.
 
+The full dissertation is available [here](ACSoMDSaFRiWBPOSDfSMEs.pdf)
+
 # Project Overview
 "A Critical Study of Misconfiguration-Driven Security and Forensic Risks in Web-Based POS Deployments for SMEs".
 
@@ -41,6 +43,14 @@ During the set up process, I had configured everything to a secure baseline, and
 
 As for the 'sensitive' transactional data I'd be analysing, OSPOS had, unfortunately, lacked the capability to take card payments, and so I repurposed a 'Comments' field in the POS terminal to accept the PAN (Primary Account Number - 16 digit number on the back of a bank card). For the test payments, I used a synthetic PAN, '4111 1111 1111 1111', which is a common Visa test card number. Obviously, using a real payment card for this project would be unethical and insecure, plus the synthetic PAN is easily-recognisable, which is why I did not use a real PAN for this experiment.
 
+For this project, I'd developed an original analytical framework consisting of a 'Misconfiguration-to-Artefact' model and a 'Remanence Source' model, these link specific misconfigurations to their likely forensic artefact locations and compliance consequences.
+
+Misconfiguration-to-Artefact Model (Full Version):
+![Misconfiguration-Artefact Model](assets/images/Misconfiguration-Artefact_Model.png) 
+
+Remanence Source Model (Full Version):
+![Remanence Source Model](assets/images/Remanence_Source_Model.png) 
+
 # Results and Key Findings
 I tested five different misconfiguration scenarios across different areas of the environment:
 1. Debug Mode and Verbose Logging - Server-side
@@ -51,13 +61,28 @@ I tested five different misconfiguration scenarios across different areas of the
 
 ## Results
 
-| Scenario | Implementation | Artefact Location | Retrieval Process |
-| :----: | :----: | :----: | :----: |
-| Debug Mode & Verbose Logging | Debug Mode Enabled, Logging Threshold Increased | Application Logs (3 files containing PAN) | `Grep` on log directory |
-| Insecure Transport | HTTPS disabled | Plaintext PAN in network packets | Wireshark capture and packet analysis |
-| Session Storage Misuse | PAN stored in client browser's local storage | Browser storage | Chrome developer tools |
-| Lack of Encryption at Rest | PAN stored in database unencrypted | Database table and raw InnoDB file | SQL queries and `Strings` |
-| Improper Invalidation | Row "deleted" with SQL | Still recoverable in underlying InnoDB file | File system analysis |
+| Scenario | Implementation | Artefact Location | Retrieval Process | OWASP Top 10 Mapping |
+| :----: | :----: | :----: | :----: | :----: |
+| Debug Mode & Verbose Logging | Debug Mode Enabled, Logging Threshold Increased | Application Logs (3 files containing PAN) | `grep` on log directory | A09:2025 - Security Logging and Alerting Failures |
+| Insecure Transport | HTTPS disabled | Plaintext PAN in network packets | Wireshark capture and packet analysis | A04:2025 - Cryptographic Failures |
+| Session Storage Misuse | PAN stored in client browser's local storage | Browser storage | Chrome developer tools | A06:2025 - Insecure Design |
+| Lack of Encryption at Rest | PAN stored in database unencrypted | Database table and raw InnoDB file | SQL queries and `strings` | A04:2025 - Cryptographic Failures |
+| Improper Invalidation | Row "deleted" with SQL | Still recoverable in underlying InnoDB file | File system analysis | A02:2025 - Security Misconfiguration |
+
+Debug Mode and Verbose Logging Output:
+![Debug Mode Output](assets/images/Debug_Mode_Output.png) 
+
+Insecure Transport Output:
+![Insecure Transport Output](assets/images/Insecure_Transport_Output.png) 
+
+Session Storage Misuse Output:
+![Session Storage Misuse Output](assets/images/Session_Misuse_Output.png) 
+
+Lack of Encryption at Rest Output:
+![Lack of Encryption Output](assets/images/Lack_of_Encryption_Output.png) 
+
+Improper Invalidation Output:
+![Improper Invalidation Output](assets/images/Improper_Invalidation_Output.png) 
 
 ## Key Findings
 There were two key findings from these tests. Firstly, and most importantly, cryptography is one of the most important factors when securely configuring systems, as the severity of many misconfigurations would be drastically decreased if sufficient encryption mechanisms were implemented. For example, the effects of verbose logging (sensitive data in log files) and improper invalidation ("deleted" data persisting in underlying storage) would be far less detrimental if the 'sensitive data' was encrypted, as it would not only be harder to identify, but also much harder to exfiltrate, thus keeping an SME compliant with regulations and standards like GDPR and the PCI DSS requirements.
@@ -67,13 +92,16 @@ The second key finding is that "deleted" does not necessarily mean 'securely era
 # Framework Evaluation
 During the literature review stage of my dissertation, I evaluated four sources of formal guidance that are available to SMEs: NCSC's Cyber Essentials, OWASP Top 10, OWASP ASVS, and PCI DSS. 
 
-Overall, I found Cyber Essentials to be too broad, covering a range of basic vulnerabilities that are useful for beginners, but lacks configuration-focused guidance that extends beyond changing default passwords and securing firewalls.  
-OWASP, on the other hand, is far more extensive, and provides not only a list of common vulnerabilities through its Top 10, but links those vulnerabilities to their Application Security Verification Standard (ASVS), which provides a comprehensive review checklist that can be used for securing web applications. However, a non-technical SME would struggle to use ASVS alone and secure a web application, and if they try, the likelihood of misconfigurations remains high. 
-Finally, I looked at PCI's Data Security Standard (PCI DSS), which provides security requirements rather than technical guidance and, credit where credit's due, this is comprehensive and a valuable source of information. However, from an SME-standpoint, these requirements may not be easily understood by smaller businesses and achieving compliance may present further technical challenges for SMEs.  
+Overall, I found Cyber Essentials to be too broad, covering a range of basic vulnerabilities that are useful for beginners, but lacks configuration-focused guidance that extends beyond changing default passwords and securing firewalls.
+
+OWASP, on the other hand, is far more extensive, and provides not only a list of common vulnerabilities through its Top 10, but links those vulnerabilities to their Application Security Verification Standard (ASVS), which provides a comprehensive review checklist that can be used for securing web applications. However, a non-technical SME would struggle to use ASVS alone and secure a web application, and if they try, the likelihood of misconfigurations remains high.
+
+Finally, I looked at PCI's Data Security Standard (PCI DSS), which provides security requirements rather than technical guidance and, credit where credit's due, this is comprehensive and a valuable source of information. However, from an SME-standpoint, these requirements may not be easily understood by smaller businesses and achieving compliance may present further technical challenges for SMEs.
+
 In conclusion, I found that while no single source provides full guidance coverage, each offers different forms of information and guidelines. Therefore, in my opinion, the best alternative for SMEs would be to combine all four frameworks, bridging the gaps and providing broad cyber security understanding, compliance requirements, and control checklists. That said, this could just introduce further complexity and overburden small businesses, but it's the strongest solution to the underlying problem: most frameworks are conceptual and don't offer practical implementation guidance.
 
 # Limitations
-Put plainly; this project is not as strong as it could have been, for several reasons:
+Although this project achieved its objectives, there are several factors that prevented it from being as comprehensive as I had intended:
 - I used one POS platform
 - I managed to choose one that doesn't actually take card payment data and repurposed application fields don't reflect the behaviour of POS deployments with transaction-handling capabilities
 - I used synthetic PAN data - necessary for ethical reasons, but not representative of real-world operation
